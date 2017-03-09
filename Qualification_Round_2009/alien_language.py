@@ -1,6 +1,5 @@
-def generated_from_pattern(pattern):
-    return find_words(pattern, 0, [])
-
+""" Uggly code to generate all the words, but it works ..
+"""
 def find_words(pattern, i, words):
     # if we are at the end of the pattern, stop
     if len(pattern) <= i+1:
@@ -18,14 +17,17 @@ def find_words(pattern, i, words):
             second_part = pattern[j+1:]
             for letter in letters:
                 word = find_words(first_part + letter + second_part, i + 1, words)
-                if word:
+                if word and not isinstance(word, list):
                     words.append(word)
             return words
         # just go to the next pattern char
         else:
-            return words.append(find_words(pattern, i+1, words))
+            word = find_words(pattern, i+1, words)
+            if word and not isinstance(word, list):
+                words.append(word)
+            return words
 
-f_name = "test"
+f_name = "A-small-practice"
 f_in = open(f_name + ".in", "r")
 f_out = open(f_name + ".out", "w")
 
@@ -39,4 +41,10 @@ for test_case in range(n):
     # read the pattern
     pattern = f_in.readline().strip()
     # generate words from the pattern and loop through them
-    print(generated_from_pattern(pattern))
+    generated_words = find_words(pattern, 0, [])
+    # count how many generated words are in the alien dict
+    count = 0
+    for generated_word in generated_words:
+        if generated_word in words:
+            count += 1
+    f_out.write("Case #{}: {}\n".format(i+1, count))
